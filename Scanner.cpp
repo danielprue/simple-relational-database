@@ -2,6 +2,7 @@
 
 //set infile
 void scanner::setInfile(std::string fileName) {
+	//open a file for output of scanner results
 	infile.open(fileName);
 	return;
 }
@@ -197,6 +198,7 @@ void scanner::printList(std::string fileName) {
 }
 
 void scanner::clearList() {
+	//cleanup function
 	for (int i = 0; i < list.size(); i++)
 		delete list[i];
 	list.clear();
@@ -204,5 +206,6 @@ void scanner::clearList() {
 }
 
 std::vector<token*> scanner::getList() {
+	//returns the list of tokens 
 	return list;
 }

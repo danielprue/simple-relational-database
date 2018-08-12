@@ -1,31 +1,38 @@
 #include "Relation.h"
 
 std::string relation::getName() {
+	//returns relations name
 	return name;
 }
 
 tuple* relation::getTuple(int position) {
+	//returns the tuple in the position position of the tuples vector
 	return tuples[position];
 }
 
 std::vector<tuple*> relation::getTuples() {
+	//returns the tuples vector
 	return tuples;
 }
 
 int relation::getTuplesSize() {
+	//returns the size of the tuples vector
 	return tuples.size();
 }
 
 scheme* relation::getScheme() {
+	//returns the scheme of the relation
 	return rScheme;
 }
 
 void relation::addTuple(tuple* newTuple) {
+	//adds a tuple to the end of the tuples vector
 	tuples.push_back(newTuple);
 	return;
 }
 
 relation* relation::selectByValue(int position, std::string value) {
+	//creates a new relation that contains all tuples from the original relation that contain the string value at position position
 	std::vector<tuple*> selected;
 	for (int i = 0; i < tuples.size(); i++) {
 		if (tuples[i]->getAttribute(position) == value) {
@@ -40,6 +47,7 @@ relation* relation::selectByValue(int position, std::string value) {
 }
 
 relation* relation::selectByComparison(int position1, int position2) {
+	//creates a new relation that contains only the tuples from the original relation that have the same value in position1 and position2
 	std::vector<tuple*> selected;
 	for (int i = 0; i < tuples.size(); i++) {
 		if (tuples[i]->getAttribute(position1) == tuples[i]->getAttribute(position2)) {
@@ -54,6 +62,7 @@ relation* relation::selectByComparison(int position1, int position2) {
 }
 
 relation* relation::project(std::vector<int> positions) {
+	//creates a new relation that contains the columns numbered in positions
 	scheme* projectScheme = new scheme();
 	std::vector<tuple*> projectTuples;
 
@@ -72,6 +81,7 @@ relation* relation::project(std::vector<int> positions) {
 }
 
 relation* relation::rename(scheme* replaceScheme) {
+	//creates a relation with tuples identical to the original relation and a new scheme
 	std::vector<tuple*> newList;
 	for (int i = 0; i < tuples.size(); i++) {
 		tuple* newTuple = new tuple();
@@ -97,6 +107,7 @@ relation* relation::unionCombine(relation* first, relation* second) {
 	if (!allMatch)
 		return nullptr;
 
+	//create a new relation identical to the original one
 	scheme* s = new scheme();
 	s->addAttributeNames(first->getScheme()->getAttributeNames());
 	tuple* t;
@@ -110,6 +121,8 @@ relation* relation::unionCombine(relation* first, relation* second) {
 	relation* r = new relation(first->getName(), s, newTuples);
 	bool alreadyThere;
 
+	//append all tuples from the second relation to the new relation
+	//do not allow duplicate tuples
 	for (int i = 0; i < second->getTuplesSize(); i++) {
 		alreadyThere = false;
 		for (int j = 0; j < r->getTuplesSize(); j++) {
@@ -136,6 +149,7 @@ relation* relation::joinCombine(relation* first, relation* second) {
 	for (int i = 0; i < second->getScheme()->getAttributeNames().size(); i++)
 		s->addAttributeName(second->getScheme()->getAttributeName(i));
 
+	//if there are any matching columns, record them in the matching vector
 	std::vector< std::vector<int> > matching;
 	for (int i = 0; i < first->getScheme()->getAttributeNames().size(); i++) {
 		for (int j = 0; j < second->getScheme()->getAttributeNames().size(); j++) {
@@ -189,6 +203,7 @@ relation* relation::joinCombine(relation* first, relation* second) {
 }
 
 relation* relation::removeDups() {
+	//create a new relation identical to the original, but with any duplicate tuples removed
 	std::vector<tuple*> newList;
 	bool add = true;
 	for (int i = 0; i < tuples.size(); i++) {
@@ -209,6 +224,10 @@ relation* relation::removeDups() {
 }
 
 void relation::sortTuples() {
+	//sort tuples
+	//tuples should be alphabetically ordered by the first element
+	//if the first element in identical, order by the second element
+	//continue pattern to the nth element 
 	std::vector< std::vector<std::string> > allStrings;
 	for (int i = 0; i < tuples.size(); i++)
 		allStrings.push_back(tuples[i]->getAttributes());
@@ -220,10 +239,12 @@ void relation::sortTuples() {
 }
 
 bool relation::compareTuples(const std::vector<std::string> &V1, const std::vector<std::string> &V2, int pos) {
+	//function for third argument of sort
 	return V1[pos] < V2[pos];
 }
 
 void relation::clear() {
+	//cleanup function
 	delete rScheme;
 	for (int i = 0; i < tuples.size(); i++) {
 		delete tuples[i];

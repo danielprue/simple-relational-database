@@ -11,7 +11,6 @@ public:
 	scanner() : currentLine(1) {};
 	~scanner() { clearList(); };
 
-	//void checkToken();
 	void scan();
 	void addToken();
 	void setInfile(std::string fileName);

@@ -4,6 +4,8 @@ void parser::parseDatalogProgram() {
 	//remove comments from dataLog before parsing
 	removeComments();
 
+	//vocabulary
+	//if an input doesn't match the vocabulary, throw and exception
 	try {
 		if (!match("SCHEMES"))
 			throw parsePosition;
@@ -399,8 +401,8 @@ bool parser::parseOperators() {
 }
 
 bool parser::match(std::string check) {
+	//use this function to test if the input matches the vocabulary
 	if (dataLog[parsePosition]->getType() == check) {
-		//Create Data Structure Here
 		parsePosition++;
 		return true;
 	}
@@ -409,14 +411,16 @@ bool parser::match(std::string check) {
 }
 
 void parser::printOutput(std::string outputFile) {
+	//use this function to display results of a parse in a txt file
 	std::ofstream outfile;
 	outfile.open(outputFile);
-	//outfile << "Success!\n";
 	outfile << output.toString(error);
 	return;
 }
 
 std::string parser::makeExpression(std::string soFar) {
+	//use this function when a parameter is an expression
+
 	//Left Paren
 	soFar += dataLog[expressionIncriment]->getValue();
 	expressionIncriment++;
@@ -448,17 +452,17 @@ std::string parser::makeExpression(std::string soFar) {
 }
 
 void parser::removeComments() {
+	//comments should be recognized by the scanner but ignored by the parser
 	for (int i = 0; i < dataLog.size(); i++) {
 		if (dataLog[i]->getType() == "COMMENT") {
 			dataLog.erase(dataLog.begin() + i);
 			i = i - 1;
 		}
-
 	}
 }
 
 void parser::clear() {
-
+	//cleanup function
 
 	for (int i = 0; i < output.getSchemeSize(); i++) 
 		delete output.getScheme(i);
@@ -472,5 +476,6 @@ void parser::clear() {
 }
 
 datalogProgram parser::getDatalogProgram() {
+	//returns the datalogprogram
 	return output;
 }
